@@ -1,32 +1,27 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const Razorpay = require("razorpay");
 
-// Mock database or any data storage
-let orders = [];
+// Razorpay instance
+const razorpay = new Razorpay({
+    key_id: "rzp_test_nFf0JdxnLRziKM",
+    key_secret: "ox8R0a6Ro7ISJWjOWKoiGh7j",
+});
 
-router.post('/api/create-order', async (req, res) => {
+// Route to create an order
+router.post("/createOrder", async (req, res) => {
+    const { amount } = req.body; // Amount in INR
+    const options = {
+        amount: amount * 100, // Convert INR to paise
+        currency: "INR",
+        receipt: `receipt_${Date.now()}`,
+    };
     try {
-        const { order_data, email, order_date, isPreOrder, preOrderTime, totalPrice } = req.body;
-
-        if (!order_data || !email || !totalPrice) {
-            return res.status(400).json({ error: "Required fields are missing" });
-        }
-
-        const newOrder = {
-            id: orders.length + 1,
-            order_data,
-            email,
-            order_date,
-            isPreOrder,
-            preOrderTime,
-            totalPrice,
-        };
-
-        orders.push(newOrder); // Add order to the mock database
-        res.status(200).json({ message: "Order placed successfully", order: newOrder });
+        const order = await razorpay.orders.create(options);
+        res.json({ success: true, order });
     } catch (error) {
-        console.error("Error processing the order:", error);
-        res.status(500).send("Internal server error.");
+        console.error(error);
+        res.status(500).json({ success: false, message: "Payment initiation failed", error });
     }
 });
 
