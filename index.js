@@ -1,7 +1,11 @@
 const express = require('express')
 const app = express();
 const mongoDb = require("./db");
-mongoDb(); //called mongodb for execution 
+mongoDb().then(() => {
+    console.log("Connected to MongoDB");
+}).catch(err => {
+    console.error("Failed to connect to MongoDB", err);
+});
 
 const cors = require('cors');
 const path = require('path'); // Add this line
@@ -27,4 +31,6 @@ app.use('/api',require("./Routes/Razorpay"));
 app.use('/api',require("./Routes/BestDelivered"));
 app.use('/api',require("./Routes/test"));
 
-app.listen(5000);
+app.listen(5000, () => {
+    console.log("Server is running on port 5000");
+});
