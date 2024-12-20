@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator'); //we are using this new thing which is validator used for validation purposes  
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // Replace bcrypt with bcryptjs
+
 const jwt = require("jsonwebtoken");
 
 // Route to create a user
