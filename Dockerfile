@@ -10,6 +10,9 @@ COPY package*.json ./
 
 RUN npm install
 
+# Rebuild bcrypt module
+RUN npm rebuild bcrypt
+
 # Bundle app source
 COPY . .
 
